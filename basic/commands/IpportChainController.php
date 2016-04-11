@@ -73,6 +73,7 @@ class IpportChainController extends Controller
         foreach($l_p as $k=>$v){
             var_dump($k);
             var_dump(count($v));
+            
         }
     }
 }
