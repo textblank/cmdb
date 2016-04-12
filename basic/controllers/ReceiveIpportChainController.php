@@ -132,15 +132,15 @@ class ReceiveIpportChainController extends Controller
 
 
             //已有的，上报没有的，判断时间是否超时，超时的删除
-            foreach($oldChain as $ok=>$ov){
-                if(!isset($reportChain[$ok])){
-                    if((strtotime($uptime) - strtotime($ov)) > $expireTime){
-                        $del = IpportChain::find()->where(['id'=>$oldId[$ok]])->one();
-                        if($del)
-                            $del->delete();
-                    }
-                }
-            }
+            // foreach($oldChain as $ok=>$ov){
+            //     if(!isset($reportChain[$ok])){
+            //         if((strtotime($uptime) - strtotime($ov)) > $expireTime){
+            //             $del = IpportChain::find()->where(['id'=>$oldId[$ok]])->one();
+            //             if($del)
+            //                 $del->delete();
+            //         }
+            //     }
+            // }
 
         }
 

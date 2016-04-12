@@ -9,6 +9,8 @@ use yii\console\Controller;
 use app\models\IpportChain;
 use app\models\Portonhost;
 use app\models\Server;
+use app\models\BizChain;
+use app\models\Biz;
 
 class IpportChainController extends Controller
 {
@@ -19,6 +21,7 @@ class IpportChainController extends Controller
         $p_l = []; //peer到local
         $biz = []; //存放server所属biz
         $bizChain = [];
+        $bizName = [];
         $wins = [3,
               4,
               5,
@@ -53,6 +56,14 @@ class IpportChainController extends Controller
             '127.0.0.1'   => 1,
         ];
 
+        //取出所有的bizname
+        $rows = Biz::find()->select('id,cname')->asArray()->all();
+        foreach($rows as $row){
+            $bizName[$row['id']] = $row['cname'];
+        }
+        unset($rows);
+        unset($row);
+
         //取出所有侦听的端口，存入ports
         $rows = Portonhost::find()->select('port')->asArray()->all();
         foreach($rows as $row){
@@ -77,7 +88,7 @@ class IpportChainController extends Controller
         }
         unset($rows);
         unset($row);
-        var_dump($biz);
+        // var_dump($biz);
 
         //取出所有chain
         $rows = IpportChain::find()->select('local_ip,local_port,peer_ip,peer_port')->where(['>', 'times', 2])->asArray()->all();
@@ -93,7 +104,21 @@ class IpportChainController extends Controller
         }
         unset($rows);
         unset($row);
-        var_dump($bizChain);
+        // var_dump($bizChain);
+
+        foreach($bizChain as $l=>$peer){
+            var_dump($l);
+            var_dump($peer);
+            foreach($peer as $p=>$num){
+                $biz = new BizChain();
+                $biz->local_biz_id = $l;
+                $biz->local_biz_name = $bizName[$l];
+                $biz->peer_biz_id = $p;
+                $biz->peer_biz_name = $bizName[$p];
+                $biz->num = $num;
+                $biz->save();
+            }
+        }
 
         $i = 0;
         foreach($l_p as $k=>$v){
@@ -102,6 +127,6 @@ class IpportChainController extends Controller
             //var_dump($v);
             $i += count($v);
         }
-        var_dump($i);
+        // var_dump($i);
     }
 }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Qunee for HTML5</title>
+    <meta charset="utf-8">
+</head>
+<body>
+<div style="height: 1000px;" id="canvas"/>
+<script src="http://demo.qunee.com/lib/qunee-min.js"></script>
+<script>
+var graph = new Q.Graph("canvas");
+  
+var nodes = [];
+function createNode(name){
+    var node = graph.createNode(name);
+    node.size = {width: 16};
+    nodes.push(node);
+    return node;
+}
+function createRandomEdge(){
+    var from = nodes[Q.randomInt(nodes.length)];
+    var to = nodes[Q.randomInt(nodes.length)];
+    if(from != to){
+        return graph.createEdge(from, to);
+    }
+}
+var i = 0;
+while(i++ < 100){
+    createNode("" + i);
+}
+i = 0;
+while(i++ < 100){
+    createRandomEdge();
+}
+  
+var layouter = new Q.SpringLayouter(graph);
+layouter.repulsion = 50;
+layouter.attractive = 0.5;
+layouter.elastic = 5;
+layouter.start();
+</script>
+</body>
+</html>
