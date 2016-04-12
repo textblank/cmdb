@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ * www.qunee.com
  */
 
 namespace app\commands;
@@ -8,6 +8,7 @@ namespace app\commands;
 use yii\console\Controller;
 use app\models\IpportChain;
 use app\models\Portonhost;
+use app\models\Server;
 
 class IpportChainController extends Controller
 {
@@ -16,6 +17,8 @@ class IpportChainController extends Controller
         $ports = []; //存放portonhost表里读取的prot
         $l_p = []; //local到peer
         $p_l = []; //peer到local
+        $biz = []; //存放server所属biz
+        $bizChain = [];
         $wins = [3,
               4,
               5,
@@ -59,21 +62,46 @@ class IpportChainController extends Controller
         unset($rows);
         unset($row);
 
-        //取出所有chain
-        $rows = IpportChain::find()->select('local_ip,local_port,peer_ip,peer_port')->where(['>', 'times', 2])->asArray()->all();
+        //取出所有server，存入biz
+        $rows = Server::find()->select('ip1,busi1Id,busi2Id,busi3Id')->asArray()->all();
         foreach($rows as $row){
-            if(isset($ports[$row['local_port']])){
-                $l_p[$row['local_ip']][$row['peer_ip']] = 1;
-                $p_l[$row['peer_ip']][$row['local_ip']] = 1;
+            if($row['busi3Id']!=NULL){
+                $biz[$row['ip1']] = $row['busi3Id'];
+            } elseif($row['busi2Id']!=NULL){
+                $biz[$row['ip1']] = $row['busi2Id'];
+            } elseif($row['busi1Id']!=NULL){
+                $biz[$row['ip1']] = $row['busi1Id'];
+            } else {
+                continue;
             }
         }
         unset($rows);
         unset($row);
+        var_dump($biz);
 
-        foreach($l_p as $k=>$v){
-            var_dump($k);
-            var_dump(count($v));
-            
+        //取出所有chain
+        $rows = IpportChain::find()->select('local_ip,local_port,peer_ip,peer_port')->where(['>', 'times', 2])->asArray()->all();
+        foreach($rows as $row){
+            if(isset($ports[$row['local_port']]) || isset($ports[$row['peer_port']])){
+                isset($ports[$row['local_port']]) ? $port = "l_".$row['local_port'] : $port = "p_".$row['peer_port'];
+                $l_p[$row['local_ip']][$row['peer_ip']] = $port;
+
+                if(isset($biz[$row['local_ip']]) && isset($biz[$row['peer_ip']])){
+                    isset($bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]) ? $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]++ : $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]] = 1;
+                }
+            }
         }
+        unset($rows);
+        unset($row);
+        var_dump($bizChain);
+
+        $i = 0;
+        foreach($l_p as $k=>$v){
+            //var_dump($k);
+            //var_dump(count($v));
+            //var_dump($v);
+            $i += count($v);
+        }
+        var_dump($i);
     }
 }
