@@ -34,16 +34,21 @@ class BizChainController extends Controller
         $data['edges'] = [];
         $rows = BizChain::find()->asArray()->all();
         foreach($rows as $row){
-            $bizs[$row['local_biz_name']] = 1;
-            $bizs[$row['peer_biz_name']] = 1;
+            $bizs[$row['local_biz_name']] = $row['local_biz_id'];
+            $bizs[$row['peer_biz_name']] = $row['peer_biz_id'];
             $data['edges'][] = [
-                'local' => $row['local_biz_name'],
-                'peer' => $row['peer_biz_name']
+                'local_biz_id' => $row['local_biz_id'],
+                'local_biz_name' => $row['local_biz_name'],
+                'peer_biz_id' => $row['peer_biz_id'],
+                'peer_biz_name' => $row['peer_biz_name']
             ];
         }
 
-        foreach($bizs as $biz=>$foo){
-            $data['nodes'][] = $biz;
+        foreach($bizs as $biz=>$id){
+            $data['nodes'][] = [
+                'biz' => $biz,
+                'id' => $id
+            ];
         }
 
         return json_encode($data);
