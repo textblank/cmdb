@@ -17,7 +17,9 @@ function createNode(name){
     nodes.push(node);
     return node;
 }
+
 function createRandomEdge(){
+	console.log(nodes.length);
     var from = nodes[Q.randomInt(nodes.length)];
     var to = nodes[Q.randomInt(nodes.length)];
     if(from != to){
@@ -25,11 +27,12 @@ function createRandomEdge(){
     }
 }
 var i = 0;
-while(i++ < 100){
+while(i++ < 10){
     createNode("" + i);
 }
+console.log(nodes.length);
 i = 0;
-while(i++ < 100){
+while(i++ < 10){
     createRandomEdge();
 }
   
