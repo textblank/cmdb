@@ -26,6 +26,7 @@ $js = <<<'JS'
 
     });
 
+    var nodes = [];
     function createNode(label){
         var node = graph.createNode(label);
         node.size = {width: 16};
@@ -34,7 +35,7 @@ $js = <<<'JS'
     }
 
     function createEdge(local, peer){
-        var edge = graph.createEdge(local, peer);
+        var edge = graph.createEdge(local+'-'+peer, local, peer);
         return edge;
     }
 
