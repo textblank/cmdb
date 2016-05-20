@@ -39,6 +39,19 @@ class HostnameTag extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'hostname' => 'Hostname',
+            'tag' => 'Tag',
+            'src' => '来源'
+        ];
+    }
+
     public function get_tag_hostname_num()
     {
         $ths = self::find()->orderBy("tag")->all();
@@ -52,16 +65,7 @@ class HostnameTag extends \yii\db\ActiveRecord
         return false;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'hostname' => 'Hostname',
-            'tag' => 'Tag',
-            'src' => '来源'
-        ];
+    public function getServer(){
+        return $this->hasOne(Server::className(), ['hostname' => $this->hostname, 'currentStatus' => Server::CURRENT_STATUS_ONLINE]);
     }
 }

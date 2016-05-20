@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\BizChain;
-use app\models\BizChainSearch;
+use app\models\ServiceImprovementTrackingInfo;
+use app\models\ServiceImprovementTrackingInfoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BizChainController implements the CRUD actions for BizChain model.
+ * ServiceImprovementTrackingInfoController implements the CRUD actions for ServiceImprovementTrackingInfo model.
  */
-class BizChainController extends Controller
+class ServiceImprovementTrackingInfoController extends Controller
 {
     public function behaviors()
     {
@@ -26,50 +26,13 @@ class BizChainController extends Controller
         ];
     }
 
-    public function actionGetJson()
-    {
-        $data = [];
-        $bizs = [];
-        $data['nodes'] = [];
-        $data['edges'] = [];
-        $rows = BizChain::find()->asArray()->all();
-        foreach($rows as $row){
-            if($row['local_biz_name'] == 'zookeeper' || $row['peer_biz_name'] == 'zookeeper'){
-                continue;
-            } else {
-                $bizs[$row['local_biz_name']] = $row['local_biz_id'];
-                $bizs[$row['peer_biz_name']] = $row['peer_biz_id'];
-                $data['edges'][] = [
-                    'local_biz_id' => $row['local_biz_id'],
-                    'local_biz_name' => $row['local_biz_name'],
-                    'peer_biz_id' => $row['peer_biz_id'],
-                    'peer_biz_name' => $row['peer_biz_name']
-                ];
-            }
-        }
-
-        foreach($bizs as $biz=>$id){
-            $data['nodes'][] = [
-                'biz' => $biz,
-                'id' => $id
-            ];
-        }
-
-        return json_encode($data);
-    }
-
-    public function actionTest()
-    {
-        return $this->render('test');
-    }
-
     /**
-     * Lists all BizChain models.
+     * Lists all ServiceImprovementTrackingInfo models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BizChainSearch();
+        $searchModel = new ServiceImprovementTrackingInfoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -79,7 +42,7 @@ class BizChainController extends Controller
     }
 
     /**
-     * Displays a single BizChain model.
+     * Displays a single ServiceImprovementTrackingInfo model.
      * @param integer $id
      * @return mixed
      */
@@ -91,16 +54,21 @@ class BizChainController extends Controller
     }
 
     /**
-     * Creates a new BizChain model.
+     * Creates a new ServiceImprovementTrackingInfo model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($parent_id)
     {
-        $model = new BizChain();
+        $model = new ServiceImprovementTrackingInfo();
+        $model->parent_id = $parent_id;
+        $model->ctime = date('Y-m-d H:i:s', time());
+        $u = Yii::$app->user->getIdentity();
+        $model->creator = $u->name;
+        $model->creator_id = $u->employee_id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['/service-improvement-tracking/view', 'id' => $model->parent_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -109,7 +77,7 @@ class BizChainController extends Controller
     }
 
     /**
-     * Updates an existing BizChain model.
+     * Updates an existing ServiceImprovementTrackingInfo model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -128,7 +96,7 @@ class BizChainController extends Controller
     }
 
     /**
-     * Deletes an existing BizChain model.
+     * Deletes an existing ServiceImprovementTrackingInfo model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -141,15 +109,15 @@ class BizChainController extends Controller
     }
 
     /**
-     * Finds the BizChain model based on its primary key value.
+     * Finds the ServiceImprovementTrackingInfo model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return BizChain the loaded model
+     * @return ServiceImprovementTrackingInfo the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = BizChain::findOne($id)) !== null) {
+        if (($model = ServiceImprovementTrackingInfo::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

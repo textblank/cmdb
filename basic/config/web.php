@@ -5,6 +5,7 @@ $params = require(__DIR__ . '/params.php');
 $config = [
     'id' => 'basic',
     'charset' => 'UTF-8',
+    'language' => 'zh-CN',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
@@ -20,9 +21,9 @@ $config = [
             'enableAutoLogin' => true,
             'loginUrl' => ['login']
         ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
+        // 'errorHandler' => [
+        //     'errorAction' => 'site/error',
+        // ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set
@@ -35,7 +36,8 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning', 'trace', 'info'],
+                    'levels' => ['error', 'warning', 'info'],
+                    'logVars' => []
                 ],
             ],
         ],
@@ -48,9 +50,10 @@ $config = [
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-    ];
+    // $config['modules']['debug'] = [
+    //     'class' => 'yii\debug\Module',
+    // ];
+    $config['modules']['debug'] = 'yii\debug\Module';
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [

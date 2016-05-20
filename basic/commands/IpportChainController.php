@@ -54,6 +54,9 @@ class IpportChainController extends Controller
             '172.17.0.35' => 1,
             '172.17.0.36' => 1,
             '127.0.0.1'   => 1,
+            '172.17.0.40' => 1,
+            '172.17.0.41' => 1,
+            '172.17.0.42' => 1
         ];
 
         //取出所有的bizname
@@ -93,12 +96,16 @@ class IpportChainController extends Controller
         //取出所有chain
         $rows = IpportChain::find()->select('local_ip,local_port,peer_ip,peer_port')->where(['>', 'times', 2])->asArray()->all();
         foreach($rows as $row){
-            if(isset($ports[$row['local_port']]) || isset($ports[$row['peer_port']])){
-                isset($ports[$row['local_port']]) ? $port = "l_".$row['local_port'] : $port = "p_".$row['peer_port'];
-                $l_p[$row['local_ip']][$row['peer_ip']] = $port;
+            if(isset($ignorePort[$row['local_port']]) || isset($ignorePort[$row['peer_port']]) || isset($ignoreIp[$row['local_ip']]) || isset($ignoreIp[$row['peer_ip']])){
+                continue;
+            } else {
+                if(isset($ports[$row['local_port']]) || isset($ports[$row['peer_port']])){
+                    isset($ports[$row['local_port']]) ? $port = "l_".$row['local_port'] : $port = "p_".$row['peer_port'];
+                    $l_p[$row['local_ip']][$row['peer_ip']] = $port;
 
-                if(isset($biz[$row['local_ip']]) && isset($biz[$row['peer_ip']])){
-                    isset($bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]) ? $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]++ : $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]] = 1;
+                    if(isset($biz[$row['local_ip']]) && isset($biz[$row['peer_ip']])){
+                        isset($bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]) ? $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]]++ : $bizChain[$biz[$row['local_ip']]][$biz[$row['peer_ip']]] = 1;
+                    }
                 }
             }
         }

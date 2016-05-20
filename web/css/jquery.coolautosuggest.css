@@ -24,6 +24,7 @@
 	background-color:#ffffff;
 	border-left:1px solid #CCCCCC;
 	border-right:1px solid #CCCCCC;
+	z-index: 1000;
 }
 
 /*

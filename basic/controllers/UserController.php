@@ -47,6 +47,14 @@ class UserController extends Controller
         return json_encode($data);
     }
 
+    public function actionJsonHeaderUserId($q = '')
+    {
+        $headers = Yii::$app->response->headers;
+        $headers->add('Access-Control-Allow-Origin', '*');
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return User::getNameByKey($q);
+    }
+
     public function actionTest()
     {
         return $this->render('test');

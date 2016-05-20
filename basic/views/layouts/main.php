@@ -72,7 +72,13 @@ AppAsset::register($this);
             ['label' => '服务埋点', 'url' => ['/service-point']],
             ['label' => '机器端口', 'url' => ['/portonhost']],
             ['label' => '日志清理', 'url' => ['/file-delete-config']],
-            ['label' => '运维文档', 'url' => ['/op-doc']],
+            // ['label' => '运维文档', 'url' => ['/op-doc']],
+            ['label' => '运维文档', 'url' => ['/op-doc'],
+                'items' => [
+                    ['label' => '运维文档', 'url' => ['/op-doc']],
+                    ['label' => '服务问题跟踪', 'url' => ['/service-improvement-tracking']],
+                ],
+            ],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/login']] :
                 [

@@ -29,6 +29,18 @@ class HostnametagController extends Controller
         ];
     }
 
+    //给孙振博提供的通过tag查询ip的接口
+    public function actionGetIpByTag($tag){
+        $data = [];
+        $rows = HostnameTag::find()->where(['tag'=>$tag])->all();
+        if($rows){
+            foreach ($rows as $row) {
+                var_dump($row->server);
+            }
+        }
+        return join(',', $data);
+    }
+
     public function actionBatchmodifytag()
     {
         if(Yii::$app->user->isGuest){
